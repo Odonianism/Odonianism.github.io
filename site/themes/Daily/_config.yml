@@ -36,7 +36,7 @@ default_post_title: Untitled
 # social
 social:
   # github: https://github.com/GallenHu
-  weibo: http://weibo.com/
+  # weibo: http://weibo.com/
   mail: ashlyyxu@gmail.com
   # twitter: https://twitter.com/GallenHu
 
@@ -45,5 +45,5 @@ social:
 #   content: 内容
 widget:
   title: 关于作者
-  content: 
+  content: '<p><a href="/bio/">个人简介</a></p>'
 footer: Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> with Theme <a href="https://github.com/GallenHu/hexo-theme-Daily" target="_blank">Daily</a>
