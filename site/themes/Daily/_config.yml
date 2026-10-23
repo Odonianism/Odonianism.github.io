@@ -35,9 +35,9 @@ default_post_title: Untitled
 
 # social
 social:
-  github: https://github.com/GallenHu
-  # weibo: http://weibo.com/10010800
-  # mail: mailto:gallenhu@foxmail.com
+  # github: https://github.com/GallenHu
+  weibo: http://weibo.com/
+  mail: ashlyyxu@gmail.com
   # twitter: https://twitter.com/GallenHu
 
 # widget
