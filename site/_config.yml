@@ -3,17 +3,17 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Hexo
+title: Odonianism
 subtitle: ''
-description: ''
+description: 阅读笔记、社会观点，以及面对不确定性时的所思所想。
 keywords:
-author: John Doe
-language: en
+author: Odonianism
+language: zh-CN
 timezone: ''
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
-url: https://kksun-001.github.io
+url: https://odonianism.github.io
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 pretty_urls:
@@ -96,7 +96,12 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: Daily
+theme: twentyfifteen
+
+# Local search index used by the theme's search widget.
+search:
+  path: search.json
+  field: post
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
