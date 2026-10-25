@@ -12,6 +12,7 @@ export async function getStaticPaths() {
 
 const { post, newerPost, olderPost } = Astro.props;
 const { Content } = await render(post);
+const baseLikeCount = Math.max(18, post.data.title.length + 7);
 ---
 
 <BaseLayout title={post.data.title} description={post.body.split('<!--more-->')[0].replace(/\s+/g, ' ').trim()}>
@@ -25,6 +26,51 @@ const { Content } = await render(post);
     <div class="prose article-content">
       <Content />
     </div>
+
+    <section class="post-actions" data-post-id={post.id}>
+      <div class="action-row">
+        <button class="action-button like-button" type="button" data-action="like" data-post-id={post.id} data-base-likes={baseLikeCount}>
+          <span class="action-icon" aria-hidden="true">♥</span>
+          <span class="action-text">喜欢</span>
+          <span class="action-count" data-like-count>{baseLikeCount}</span>
+        </button>
+        <button class="action-button comment-toggle" type="button" data-action="comment" data-post-id={post.id}>
+          <span class="action-icon" aria-hidden="true">✎</span>
+          <span class="action-text">评论</span>
+          <span class="action-count" data-comment-count>0</span>
+        </button>
+        <button
+          class="action-button share-button"
+          type="button"
+          data-action="share"
+          aria-expanded="false"
+          aria-controls={`share-panel-${post.id}`}
+        >
+          <span class="action-icon" aria-hidden="true">↗</span>
+          <span class="action-text">分享</span>
+        </button>
+      </div>
+
+      <div class="share-panel" id={`share-panel-${post.id}`} hidden>
+        <label class="sr-only" for={`share-url-${post.id}`}>文章分享链接</label>
+        <input id={`share-url-${post.id}`} class="share-url" type="url" readonly value={`/posts/${post.id}/`} />
+        <button class="copy-share-link" type="button">复制链接</button>
+        <span class="share-status" role="status" aria-live="polite"></span>
+      </div>
+
+      <div class="comment-panel" hidden>
+        <form class="comment-form" data-comment-form>
+          <label class="sr-only" for={`comment-${post.id}`}>写下你的评论</label>
+          <textarea id={`comment-${post.id}`} name="comment" rows="3" maxlength="240" placeholder="写下你的想法…"></textarea>
+          <div class="comment-form-footer">
+            <span>请保持友善</span>
+            <button type="submit" class="submit-comment">发布</button>
+          </div>
+        </form>
+        <ul class="comment-list" data-comment-list></ul>
+      </div>
+    </section>
+
     {(newerPost || olderPost) && (
       <nav class="post-navigation" aria-label="文章导航">
         {newerPost ? (
@@ -45,6 +91,144 @@ const { Content } = await render(post);
   </article>
 </BaseLayout>
 
+<script>
+  const escapeHtml = (value) => value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
+  const readSavedLikes = (postId) => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(`odonian-likes-${postId}`) || 'null');
+      if (!saved || typeof saved.count !== 'number' || typeof saved.liked !== 'boolean') {
+        return null;
+      }
+      return saved;
+    } catch {
+      return null;
+    }
+  };
+
+  const renderLikeState = (postId, baseCount) => {
+    const likeButton = document.querySelector(`.like-button[data-post-id="${postId}"]`);
+    const likeCount = likeButton?.querySelector('[data-like-count]');
+    if (!likeButton || !likeCount) return;
+
+    const saved = readSavedLikes(postId) || { count: Number(baseCount), liked: false };
+    likeButton.dataset.liked = String(saved.liked);
+    likeButton.classList.toggle('is-liked', saved.liked);
+    likeCount.textContent = String(saved.count);
+  };
+
+  const readSavedComments = (postId) => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(`odonian-comments-${postId}`) || '[]');
+      return Array.isArray(saved) ? saved.filter((item) => typeof item === 'string' && item.trim()) : [];
+    } catch {
+      return [];
+    }
+  };
+
+  const renderComments = (postId) => {
+    const list = document.querySelector(`.comment-list[data-comment-list]`);
+    const counter = document.querySelector(`.comment-toggle[data-post-id="${postId}"] [data-comment-count]`);
+    if (!list || !counter) return;
+
+    const comments = readSavedComments(postId);
+    counter.textContent = String(comments.length);
+    list.innerHTML = comments.length
+      ? comments.map((comment) => `
+          <li class="comment-item">
+            <span class="comment-badge">留言</span>
+            <p>${escapeHtml(comment)}</p>
+          </li>
+        `).join('')
+      : '<li class="comment-empty">还没有评论，先发一个想法吧。</li>';
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const postActions = document.querySelector('.post-actions');
+    if (!postActions) return;
+
+    const postId = postActions.dataset.postId;
+    const baseLikes = Number(document.querySelector(`.like-button[data-post-id="${postId}"]`)?.dataset.baseLikes || 0);
+    renderLikeState(postId, baseLikes);
+    renderComments(postId);
+
+    const commentToggle = document.querySelector(`.comment-toggle[data-post-id="${postId}"]`);
+    const commentPanel = document.querySelector('.comment-panel');
+    const commentForm = document.querySelector('[data-comment-form]');
+    const shareButton = document.querySelector('.share-button');
+    const sharePanel = document.querySelector('.share-panel');
+    const shareUrl = document.querySelector('.share-url');
+    const copyShareLink = document.querySelector('.copy-share-link');
+    const shareStatus = document.querySelector('.share-status');
+
+    if (shareUrl instanceof HTMLInputElement) {
+      shareUrl.value = window.location.href;
+    }
+
+    commentToggle?.addEventListener('click', () => {
+      if (!commentPanel) return;
+      const isHidden = commentPanel.hasAttribute('hidden');
+      commentPanel.toggleAttribute('hidden', !isHidden);
+      commentToggle.classList.toggle('is-active', isHidden);
+      if (isHidden) {
+        const textarea = commentForm?.querySelector('textarea');
+        setTimeout(() => textarea?.focus(), 50);
+      }
+    });
+
+    commentForm?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const textarea = commentForm.querySelector('textarea');
+      const comment = textarea?.value.trim();
+      if (!comment) return;
+
+      const comments = readSavedComments(postId);
+      comments.push(comment);
+      localStorage.setItem(`odonian-comments-${postId}`, JSON.stringify(comments.slice(-12)));
+      renderComments(postId);
+      textarea.value = '';
+    });
+
+    const likeButton = document.querySelector(`.like-button[data-post-id="${postId}"]`);
+    likeButton?.addEventListener('click', () => {
+      const saved = readSavedLikes(postId) || { count: baseLikes, liked: false };
+      const nextLiked = !saved.liked;
+      const nextCount = nextLiked ? saved.count + 1 : Math.max(0, saved.count - 1);
+      const updated = { count: nextCount, liked: nextLiked };
+      localStorage.setItem(`odonian-likes-${postId}`, JSON.stringify(updated));
+      renderLikeState(postId, baseLikes);
+    });
+
+    shareButton?.addEventListener('click', () => {
+      if (!sharePanel) return;
+      const isHidden = sharePanel.hasAttribute('hidden');
+      sharePanel.toggleAttribute('hidden', !isHidden);
+      shareButton.setAttribute('aria-expanded', String(isHidden));
+      shareButton.classList.toggle('is-active', isHidden);
+      if (isHidden && shareUrl instanceof HTMLInputElement) {
+        shareUrl.focus();
+        shareUrl.select();
+      }
+    });
+
+    copyShareLink?.addEventListener('click', async () => {
+      if (!(shareUrl instanceof HTMLInputElement) || !shareStatus) return;
+      shareUrl.select();
+      try {
+        await navigator.clipboard.writeText(shareUrl.value);
+        shareStatus.textContent = '链接已复制';
+      } catch {
+        shareStatus.textContent = '链接已选中，请复制';
+      }
+    });
+  });
+</script>
+
 <style>
   .article-page { max-width: 760px; margin: 0 auto; padding: 52px 0 0; }
   .back-link { color: var(--muted); font: 11px/1.6 var(--sans); letter-spacing: .04em; }
@@ -55,6 +239,35 @@ const { Content } = await render(post);
   .article-header h1 { margin: 0; font-size: clamp(32px, 6vw, 56px); font-weight: 500; line-height: 1.35; letter-spacing: -.04em; }
   .article-cover { width: 100%; max-height: 430px; margin-top: 35px; object-fit: cover; }
   .article-content { padding-top: 24px; }
+
+  .post-actions { margin-top: 40px; padding-top: 28px; border-top: 1px solid var(--line); }
+  .action-row { display: flex; flex-wrap: wrap; gap: 12px; }
+  .action-button {
+    display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 999px; background: rgba(255,255,255,.2); color: var(--ink); font: 12px/1 var(--sans); letter-spacing: .06em; cursor: pointer; transition: all .2s ease;
+  }
+  .action-button:hover, .action-button.is-active { border-color: var(--accent); color: var(--accent); }
+  .action-button.is-liked { background: rgba(167, 79, 53, .06); }
+  .action-icon { font-size: 15px; }
+  .action-count { color: var(--muted); }
+  .share-panel { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 14px; padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.2); }
+  .share-url { flex: 1 1 260px; min-width: 0; padding: 10px 12px; border: 1px solid var(--line); border-radius: 9px; background: var(--paper); color: var(--ink); font: 12px/1.5 var(--sans); }
+  .copy-share-link { padding: 11px 14px; border: 0; border-radius: 999px; background: var(--ink); color: #f8f6f2; font: 11px/1 var(--sans); cursor: pointer; }
+  .share-status { color: var(--muted); font: 11px/1.5 var(--sans); }
+  .comment-panel { margin-top: 18px; padding: 18px; border: 1px solid var(--line); border-radius: 18px; background: rgba(255,255,255,.2); }
+  .comment-form textarea {
+    width: 100%; resize: vertical; min-height: 92px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: rgba(251,250,247,.9); color: var(--ink); font: 15px/1.8 var(--sans);
+  }
+  .comment-form textarea:focus { border-color: var(--accent); outline: none; }
+  .comment-form-footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 12px; color: var(--muted); font: 11px/1.6 var(--sans); letter-spacing: .06em; }
+  .submit-comment {
+    padding: 10px 16px; border: 0; border-radius: 999px; background: var(--ink); color: #f8f6f2; font: 11px/1 var(--sans); letter-spacing: .08em; cursor: pointer;
+  }
+  .comment-list { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 12px; }
+  .comment-item { display: grid; gap: 8px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: rgba(251,250,247,.5); }
+  .comment-badge { display: inline-flex; width: fit-content; padding: 4px 8px; border-radius: 999px; background: rgba(167,79,53,.08); color: var(--accent); font: 10px/1 var(--sans); letter-spacing: .08em; }
+  .comment-item p, .comment-empty { margin: 0; color: #4e5049; font: 14px/1.8 var(--sans); }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
+
   .post-navigation { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 48px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
   .post-navigation a { display: grid; gap: 8px; padding: 20px 0; }
   .post-navigation a:hover strong { color: var(--accent); }
@@ -67,5 +280,8 @@ const { Content } = await render(post);
     .article-page { padding-top: 32px; }
     .article-header { padding-top: 42px; }
     .article-content { font-size: 15px; }
+    .action-row { gap: 8px; }
+    .action-button { flex: 1 1 calc(50% - 8px); justify-content: center; }
+    .comment-form-footer { align-items: flex-start; flex-direction: column; }
   }
 </style>
