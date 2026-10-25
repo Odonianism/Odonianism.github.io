@@ -1,0 +1,21 @@
+---
+import { getEntry, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const page = await getEntry('pages', 'bio');
+if (!page) throw new Error('Missing source/bio.md content entry.');
+const { Content } = await render(page);
+---
+
+<BaseLayout title={page.data.title}>
+  <article class="info-page">
+    <p class="eyebrow">关于作者</p>
+    <h1 class="page-heading">{page.data.title}</h1>
+    <div class="prose"><Content /></div>
+  </article>
+</BaseLayout>
+
+<style>
+  .info-page { max-width: 720px; margin: 0 auto; padding: clamp(72px, 12vw, 132px) 0 20px; }
+  .info-page .prose { margin-top: 40px; }
+</style>

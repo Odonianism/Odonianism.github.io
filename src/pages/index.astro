@@ -1,0 +1,154 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const posts = (await getCollection('posts')).sort((a, b) => b.id.localeCompare(a.id));
+const excerpt = (body: string) => body
+  .split('<!--more-->')[0]
+  .replace(/^#+\s*/gm, '')
+  .replace(/[*_`>]/g, '')
+  .replace(/\s+/g, ' ')
+  .trim()
+  .slice(0, 160);
+---
+
+<BaseLayout title="首页">
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">一个关于自由与共同生活的空间</p>
+      <h1>在时代的裂缝里，<br />寻找另一种可能。</h1>
+      <p class="hero-intro">阅读笔记、社会观点，以及面对不确定性时的所思所想。</p>
+      <a class="hero-link" href="#articles">从文章开始 <span aria-hidden="true">↘</span></a>
+    </div>
+    <div class="hero-aside" aria-label="网站介绍">
+      <span class="aside-index">01 / 03</span>
+      <span class="aside-rule"></span>
+      <p>写下正在思考的事，<br />也写下尚未抵达的未来。</p>
+      <span class="aside-seal" aria-hidden="true">O</span>
+    </div>
+  </section>
+
+  <section class="articles" id="articles">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">最近的思考</p>
+        <h2>文章</h2>
+      </div>
+      <span class="article-count">{String(posts.length).padStart(2, '0')} 篇</span>
+    </div>
+    <div class="post-list">
+      {posts.map((post, index) => (
+        <article class="post-card">
+          <a class="post-image-link" href={`/posts/${post.id}/`} aria-label={`阅读：${post.data.title}`}>
+            {post.data.photos?.[0] && <img src={post.data.photos[0]} alt="" loading="lazy" />}
+            <span class="image-index">{String(index + 1).padStart(2, '0')}</span>
+          </a>
+          <div class="post-copy">
+            <div class="post-meta">
+              <span>阅读笔记</span>
+              {post.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+            </div>
+            <h3><a href={`/posts/${post.id}/`}>{post.data.title}</a></h3>
+            <p>{excerpt(post.body)}</p>
+            <a class="read-link" href={`/posts/${post.id}/`}>阅读全文 <span aria-hidden="true">→</span></a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    align-items: end;
+    gap: 60px;
+    padding: clamp(72px, 11vw, 140px) 0 100px;
+  }
+
+  .hero h1 {
+    max-width: 750px;
+    margin: 0;
+    font-size: clamp(40px, 7vw, 82px);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -.055em;
+  }
+
+  .hero-intro {
+    max-width: 440px;
+    margin: 24px 0 30px;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.9;
+  }
+
+  .hero-link, .read-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 20px;
+    color: var(--accent);
+    font: 12px/1.5 var(--sans);
+    letter-spacing: .06em;
+  }
+
+  .hero-link span { font-size: 18px; transition: transform .2s ease; }
+  .hero-link:hover span { transform: translate(3px, 3px); }
+
+  .hero-aside { position: relative; min-height: 150px; padding-top: 18px; }
+  .aside-index, .article-count { color: var(--muted); font: 10px var(--sans); letter-spacing: .1em; }
+  .aside-rule { display: block; width: 100%; margin: 16px 0; border-top: 1px solid var(--line); }
+  .hero-aside p { color: #62635b; font-size: 13px; line-height: 1.9; }
+  .aside-seal {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border: 1px solid #c7c3b8;
+    border-radius: 50%;
+    color: #9b988e;
+    font: italic 27px Georgia, serif;
+  }
+
+  .articles { padding-top: 30px; }
+  .section-heading { display: flex; align-items: end; justify-content: space-between; padding-bottom: 22px; border-bottom: 1px solid var(--ink); }
+  .section-heading .eyebrow { margin-bottom: 7px; }
+  .section-heading h2 { margin: 0; font-size: 27px; font-weight: 500; }
+  .article-count { padding-bottom: 5px; }
+
+  .post-card {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: clamp(28px, 6vw, 76px);
+    padding: 32px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .post-image-link { position: relative; display: block; height: 190px; overflow: hidden; background: #e8e4dc; }
+  .post-image-link img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+  .post-image-link:hover img { transform: scale(1.04); }
+  .image-index { position: absolute; bottom: 10px; left: 12px; color: #fff; font: 10px var(--sans); letter-spacing: .1em; text-shadow: 0 1px 5px #333; }
+  .post-copy { align-self: center; }
+  .post-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; color: var(--muted); font: 10px var(--sans); letter-spacing: .06em; }
+  .tag { padding: 4px 8px; border: 1px solid var(--line); }
+  .post-copy h3 { margin: 13px 0 10px; font-size: clamp(19px, 2.5vw, 26px); font-weight: 500; line-height: 1.55; }
+  .post-copy h3 a:hover { color: var(--accent); }
+  .post-copy > p { display: -webkit-box; overflow: hidden; margin: 0 0 16px; color: var(--muted); font-size: 13px; line-height: 1.9; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+  .read-link { gap: 12px; font-size: 10px; }
+
+  @media (max-width: 720px) {
+    .hero { grid-template-columns: 1fr; gap: 40px; padding-block: 72px 64px; }
+    .hero-aside { min-height: 115px; max-width: 380px; }
+    .post-card { grid-template-columns: minmax(100px, 35%) 1fr; gap: 20px; padding-block: 24px; }
+    .post-image-link { height: 150px; }
+  }
+
+  @media (max-width: 480px) {
+    .post-card { grid-template-columns: 1fr; gap: 16px; }
+    .post-image-link { height: 200px; }
+  }
+</style>

@@ -1,18 +1,20 @@
 # 奥多主义
 
-Hexo blog using the [Twenty Fifteen WordPress theme for Hexo](./themes/twentyfifteen-wordpress/README.md).
+An Astro-powered Chinese reading and ideas blog. Posts and pages remain in
+`source/`; the Astro content collections load them directly from those Markdown
+files. Source images are copied to `public/images/` for static serving.
 
 ## Run locally
 
 ```sh
 npm install
-npm run server
+npm run dev
 ```
 
-Generate the static site into `public/` with:
+Build the static site into `dist/` with:
 
 ```sh
 npm run build
 ```
 
-Posts live in `source/_posts/`; pages and images live in `source/`. Existing posts, pages, and image files have been retained.
+Posts live in `source/_posts/`. Pages and images live in `source/`.

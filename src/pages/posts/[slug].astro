@@ -1,0 +1,46 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<BaseLayout title={post.data.title} description={post.body.split('<!--more-->')[0].replace(/\s+/g, ' ').trim()}>
+  <article class="article-page">
+    <a class="back-link" href="/">← 返回文章列表</a>
+    <header class="article-header">
+      <p class="eyebrow">阅读笔记 <span>·</span> {post.data.tags.join(' / ')}</p>
+      <h1>{post.data.title}</h1>
+      {post.data.photos?.[0] && <img class="article-cover" src={post.data.photos[0]} alt="" />}
+    </header>
+    <div class="prose article-content">
+      <Content />
+    </div>
+    <a class="back-link bottom-back-link" href="/">← 返回文章列表</a>
+  </article>
+</BaseLayout>
+
+<style>
+  .article-page { max-width: 760px; margin: 0 auto; padding: 52px 0 0; }
+  .back-link { color: var(--muted); font: 11px/1.6 var(--sans); letter-spacing: .04em; }
+  .back-link:hover { color: var(--accent); }
+  .article-header { padding: 56px 0 30px; }
+  .article-header .eyebrow { margin-bottom: 18px; }
+  .article-header .eyebrow span { padding-inline: 5px; }
+  .article-header h1 { margin: 0; font-size: clamp(32px, 6vw, 56px); font-weight: 500; line-height: 1.35; letter-spacing: -.04em; }
+  .article-cover { width: 100%; max-height: 430px; margin-top: 35px; object-fit: cover; }
+  .article-content { padding-top: 24px; }
+  .bottom-back-link { display: inline-block; margin-top: 32px; }
+
+  @media (max-width: 680px) {
+    .article-page { padding-top: 32px; }
+    .article-header { padding-top: 42px; }
+    .article-content { font-size: 15px; }
+  }
+</style>
