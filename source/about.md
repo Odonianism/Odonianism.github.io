@@ -3,7 +3,7 @@ title: About
 permalink: /about/
 ---
 
-Hello，Odonians! 
+Hello! 
 
 这里堆满了本人的阅读笔记、社会观点、以及其他面对不确定性的所思所想。所有文字均有本人亲自敲打，绝无AI痕迹，非常感谢您的阅读！
 

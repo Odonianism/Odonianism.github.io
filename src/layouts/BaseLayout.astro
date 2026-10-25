@@ -19,14 +19,14 @@ const navigation = [
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#f5f2ec" />
-    <title>{title} · 奥多主义</title>
+    <title>{title} · 奥多主义者</title>
   </head>
   <body>
     <div class="site-shell">
       <header id="top" class="site-header">
-        <a class="brand" href="/" aria-label="奥多主义首页">
+        <a class="brand" href="/" aria-label="奥多主义者首页">
           <span class="brand-mark" aria-hidden="true">O</span>
-          <span class="brand-name">奥多主义</span>
+          <span class="brand-name">奥多主义者</span>
         </a>
         <nav class="site-nav" aria-label="主导航">
           {navigation.map((item) => <a href={item.href}>{item.label}</a>)}
@@ -37,7 +37,7 @@ const navigation = [
         <slot />
       </main>
       <footer class="site-footer">
-        <a class="footer-brand" href="/">奥多主义</a>
+        <a class="footer-brand" href="/">奥多主义者</a>
         <span>在不确定中，继续思考。</span>
         <a href="#top" onclick="window.scrollTo({ top: 0, behavior: 'smooth' }); return false;">回到顶部 ↑</a>
       </footer>
