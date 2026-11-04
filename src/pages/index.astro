@@ -13,146 +13,267 @@ const excerpt = (body: string) => body
 ---
 
 <BaseLayout title="首页">
-  <section class="hero">
-    <div class="hero-copy">
-      <p class="eyebrow">一个关于自由与共同生活的空间</p>
-      <h1>在权力缝隙中，<br />寻找自由联合。</h1>
-      <p class="hero-intro">阅读笔记、社会观察，以及对不确定性的思考。</p>
-      <a class="hero-link" href="#articles">从文章开始 <span aria-hidden="true">↘</span></a>
-    </div>
-  </section>
-
-  <section class="articles" id="articles">
-    <div class="section-heading">
-      <div>
-        <p class="eyebrow">最近的想法</p>
-        <h2>文章</h2>
+  <div class="home-page">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="hero-kicker"><span>思想的现场</span><span aria-hidden="true">/</span><span>自由 · 表达 · 共同行动</span></p>
+        <h1>在权力的缝隙中，<br /><span>寻找自由联合。</span></h1>
+        <p class="hero-intro">职场现状、社会观察，以及对不确定性的思考。</p>
+        <a class="hero-link" href="#articles"><span>进入文章</span><span aria-hidden="true">↘</span></a>
       </div>
-      <span class="article-count">{String(posts.length).padStart(2, '0')} 篇</span>
-    </div>
-    <div class="post-list">
-      {posts.map((post, index) => (
-        <article class="post-card">
-          <a class="post-image-link" href={`/posts/${post.id}/`} aria-label={`阅读：${post.data.title}`}>
-            {post.data.photos?.[0] && <img src={post.data.photos[0]} alt="" loading="lazy" />}
-            <span class="image-index">{String(index + 1).padStart(2, '0')}</span>
-          </a>
-          <div class="post-copy">
-            <div class="post-meta">
-              <span>社会观察</span>
-              {post.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+      <figure class="hero-art">
+        <img
+          src="/images/Vintage%20Revolutionary%20Rally%20Poster.png"
+          alt="复古革命集会海报：人群举起红旗"
+          fetchpriority="high"
+        />
+        <figcaption><span>共同的处境</span><span>档案 / 01</span></figcaption>
+      </figure>
+      <div class="hero-ribbon" aria-hidden="true"><span>自由联合</span><span>思想不设边界</span><span>彼此照亮</span></div>
+    </section>
+
+    <section class="articles" id="articles">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">记录正在发生的事</p>
+          <h2>文章 <span>／ NOTES &amp; OBSERVATIONS</span></h2>
+        </div>
+        <span class="article-count">{String(posts.length).padStart(2, '0')} 篇</span>
+      </div>
+      <div class="post-list">
+        {posts.map((post, index) => (
+          <article class="post-card">
+            <a class="post-image-link" href={`/posts/${post.id}/`} aria-label={`阅读：${post.data.title}`}>
+              {post.data.photos?.[0] && <img src={post.data.photos[0]} alt="" loading="lazy" />}
+              <span class="image-index">{String(index + 1).padStart(2, '0')}</span>
+            </a>
+            <div class="post-copy">
+              <div class="post-meta">
+                <span>社会观察</span>
+                {post.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+              </div>
+              <h3><a href={`/posts/${post.id}/`}>{post.data.title}</a></h3>
+              <p>{excerpt(post.body)}</p>
+              <a class="read-link" href={`/posts/${post.id}/`}>阅读全文 <span aria-hidden="true">→</span></a>
             </div>
-            <h3><a href={`/posts/${post.id}/`}>{post.data.title}</a></h3>
-            <p>{excerpt(post.body)}</p>
-            <a class="read-link" href={`/posts/${post.id}/`}>阅读全文 <span aria-hidden="true">→</span></a>
-          </div>
-        </article>
-      ))}
-    </div>
-  </section>
+          </article>
+        ))}
+      </div>
+    </section>
+  </div>
 </BaseLayout>
 
 <style>
-  .hero {
+  .home-page {
     position: relative;
     isolation: isolate;
-    display: grid;
-    align-items: center;
-    min-height: min(660px, calc(100svh - 88px));
-    margin: 40px 0 30px;
-    padding: clamp(56px, 8vw, 112px) clamp(28px, 6vw, 80px);
-    overflow: hidden;
-    border-bottom: 4px solid var(--accent);
-    background: #eee8dd;
+    margin-top: 24px;
+    padding: 18px clamp(18px, 3.2vw, 42px) 36px;
+    background-color: #f1eee7;
+    background-image:
+      radial-gradient(ellipse at 14% 12%, rgb(255 255 255 / 70%), transparent 48%),
+      radial-gradient(rgb(108 91 72 / 16%) 0.4px, transparent 0.6px);
+    background-size: auto, 7px 7px;
   }
 
-  .hero::before {
-    position: absolute;
-    z-index: -1;
-    inset: 0;
-    background-image:
-      linear-gradient(90deg, #ffffff 0%, rgb(255 255 255 / 96%) 27%, rgb(255 255 255 / 82%) 45%, rgb(255 255 255 / 28%) 70%, rgb(255 255 255 / 5%) 100%),
-      url('/images/Vintage%20Revolutionary%20Rally%20Poster.png');
-    background-position: center;
-    background-size: cover;
-    content: "";
+  .hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, .92fr);
+    align-items: center;
+    gap: clamp(28px, 5vw, 70px);
+    min-height: 520px;
+    padding: clamp(38px, 6vw, 78px) clamp(8px, 2vw, 26px) 90px;
+    border-bottom: 1px solid rgb(40 35 29 / 28%);
   }
 
   .hero-copy {
-    max-width: 650px;
+    position: relative;
+    z-index: 2;
+    max-width: 590px;
+  }
+
+  .hero-kicker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin: 0 0 28px;
+    color: var(--accent);
+    font: 11px/1.5 var(--sans);
+    letter-spacing: .16em;
   }
 
   .hero h1 {
-    max-width: 650px;
+    max-width: 640px;
     margin: 0;
-    font-size: clamp(40px, 5.5vw, 68px);
+    font-size: clamp(42px, 5.3vw, 70px);
     font-weight: 600;
-    line-height: 1.2;
-    letter-spacing: -.055em;
+    line-height: 1.3;
+    letter-spacing: -.075em;
   }
 
-  .hero h1::first-line { text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 3px; text-underline-offset: 10px; }
+  .hero h1 span {
+    position: relative;
+    z-index: 0;
+    color: #f7f3ea;
+    white-space: nowrap;
+  }
+
+  .hero h1 span::before {
+    position: absolute;
+    z-index: -1;
+    top: 16%;
+    right: -7%;
+    bottom: 8%;
+    left: -5%;
+    background: var(--accent);
+    clip-path: polygon(1% 10%, 18% 7%, 37% 10%, 54% 5%, 77% 9%, 99% 3%, 98% 90%, 82% 94%, 61% 90%, 41% 96%, 19% 91%, 2% 97%);
+    content: "";
+  }
 
   .hero-intro {
-    max-width: 440px;
-    margin: 24px 0 30px;
-    color: #444444;
+    max-width: 430px;
+    margin: 26px 0 30px;
+    color: #4f4a42;
     font-size: 15px;
-    line-height: 1.9;
+    line-height: 2;
+    letter-spacing: .05em;
+  }
+
+  .hero-art {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    padding: 11px 11px 0;
+    background: #f8f6f0;
+    box-shadow: 0 18px 35px rgb(47 39 30 / 18%);
+    transform: rotate(1.3deg);
+  }
+
+  .hero-art::before {
+    position: absolute;
+    z-index: -1;
+    inset: -12px 12px 20px -12px;
+    background: #b5121b;
+    clip-path: polygon(0 3%, 16% 1%, 31% 3%, 53% 0, 75% 3%, 100% 1%, 98% 99%, 78% 96%, 56% 100%, 34% 97%, 17% 100%, 1% 97%);
+    content: "";
+  }
+
+  .hero-art img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1.36;
+    object-fit: cover;
+    object-position: center;
+    filter: grayscale(1) contrast(1.04);
+  }
+
+  .hero-art figcaption {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 2px 13px;
+    color: #51493f;
+    font: 10px/1.5 var(--sans);
+    letter-spacing: .1em;
+  }
+
+  .hero-art figcaption span:last-child {
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .hero-ribbon {
+    position: absolute;
+    right: -2px;
+    bottom: 13px;
+    left: -2px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 20px;
+    background: var(--accent);
+    clip-path: polygon(0 8%, 18% 12%, 35% 5%, 54% 11%, 72% 4%, 100% 9%, 99% 94%, 78% 89%, 57% 96%, 39% 90%, 19% 98%, 1% 91%);
+    color: #fff8eb;
+    font: 10px/1.5 var(--sans);
+    letter-spacing: .16em;
   }
 
   .hero-link, .read-link {
     display: inline-flex;
     align-items: center;
-    gap: 20px;
+    gap: 14px;
     color: var(--accent);
-    font: 12px/1.5 var(--sans);
-    letter-spacing: .06em;
+    font: 11px/1.5 var(--sans);
+    letter-spacing: .12em;
   }
 
-  .hero-link span { font-size: 18px; transition: transform .2s ease; }
-  .hero-link:hover span { transform: translate(3px, 3px); }
+  .hero-link {
+    padding: 12px 16px;
+    border: 1px solid rgb(181 18 27 / 55%);
+    transition: color .2s ease, background-color .2s ease;
+  }
 
-  .articles { padding-top: 30px; }
-  .section-heading { display: flex; align-items: end; justify-content: space-between; padding-bottom: 22px; border-bottom: 2px solid var(--ink); }
+  .hero-link:hover {
+    background: var(--accent);
+    color: #fff8eb;
+  }
+
+  .hero-link span:last-child { font-size: 18px; transition: transform .2s ease; }
+  .hero-link:hover span:last-child { transform: translate(3px, 3px); }
+
+  .articles { padding-top: 34px; }
+  .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 16px; padding-bottom: 18px; border-bottom: 2px solid var(--ink); }
   .section-heading .eyebrow { margin-bottom: 7px; }
-  .section-heading h2 { margin: 0; font-size: 27px; font-weight: 500; }
+  .section-heading h2 { margin: 0; font-size: 27px; font-weight: 600; }
+  .section-heading h2 span { color: var(--muted); font: 9px var(--sans); letter-spacing: .12em; vertical-align: middle; }
   .article-count { padding-bottom: 5px; color: var(--muted); font: 10px var(--sans); letter-spacing: .1em; }
 
   .post-card {
     display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: clamp(28px, 6vw, 76px);
-    padding: 32px 0;
-    border-bottom: 1px solid var(--line);
+    grid-template-columns: minmax(180px, 280px) 1fr;
+    gap: clamp(24px, 5vw, 62px);
+    margin-top: 22px;
+    padding: 16px;
+    border: 1px solid rgb(75 66 54 / 16%);
+    background: rgb(250 248 242 / 78%);
+    box-shadow: 0 8px 24px rgb(47 39 30 / 5%);
   }
 
-  .post-image-link { position: relative; display: block; height: 190px; overflow: hidden; background: #f1f1f1; }
-  .post-image-link img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+  .post-image-link { position: relative; display: block; min-height: 190px; overflow: hidden; background: #ded8cd; }
+  .post-image-link img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: saturate(.72); transition: transform .4s ease; }
   .post-image-link:hover img { transform: scale(1.04); }
-  .image-index { position: absolute; bottom: 10px; left: 12px; color: #fff; font: 10px var(--sans); letter-spacing: .1em; text-shadow: 0 1px 5px #333; }
+  .image-index { position: absolute; bottom: 10px; left: 12px; color: #fff; font: 11px var(--sans); letter-spacing: .1em; text-shadow: 0 1px 5px #333; }
   .post-copy { align-self: center; }
   .post-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; color: var(--muted); font: 10px var(--sans); letter-spacing: .06em; }
-  .tag { padding: 4px 8px; border: 1px solid var(--line); color: #333333; }
+  .tag { padding: 4px 8px; border: 1px solid rgb(181 18 27 / 28%); color: #333333; }
   .post-copy h3 { margin: 13px 0 10px; font-size: clamp(19px, 2.5vw, 26px); font-weight: 500; line-height: 1.55; }
   .post-copy h3 a:hover { color: var(--accent); }
   .post-copy > p { display: -webkit-box; overflow: hidden; margin: 0 0 16px; color: #555555; font-size: 13px; line-height: 1.9; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
   .read-link { gap: 12px; font-size: 10px; }
 
   @media (max-width: 720px) {
-    .hero { min-height: 600px; margin-top: 24px; padding: 52px 24px; }
-    .hero::before {
-      background-image:
-        linear-gradient(180deg, rgb(255 255 255 / 94%) 0%, rgb(255 255 255 / 89%) 48%, rgb(255 255 255 / 16%) 100%),
-        url('/images/Vintage%20Revolutionary%20Rally%20Poster.png');
-      background-position: 62% center;
-    }
-    .post-card { grid-template-columns: minmax(100px, 35%) 1fr; gap: 20px; padding-block: 24px; }
-    .post-image-link { height: 150px; }
+    .home-page { margin-top: 16px; padding-inline: 18px; }
+    .hero { grid-template-columns: 1fr; gap: 28px; min-height: 0; padding: 44px 2px 78px; }
+    .hero-copy { max-width: 540px; }
+    .hero h1 { font-size: clamp(42px, 9vw, 62px); }
+    .hero-art { width: min(100% - 24px, 500px); margin: 0 auto; transform: rotate(.7deg); }
+    .hero-art img { aspect-ratio: 1.42; }
+    .hero-ribbon { bottom: 12px; }
+    .post-card { grid-template-columns: minmax(130px, 35%) 1fr; gap: 20px; padding: 12px; }
+    .post-image-link { min-height: 150px; }
   }
 
   @media (max-width: 480px) {
+    .home-page { padding-inline: 14px; }
+    .hero { padding-top: 36px; }
+    .hero-kicker { font-size: 9px; letter-spacing: .11em; }
+    .hero h1 { font-size: clamp(38px, 10vw, 48px); }
+    .hero h1 span { white-space: normal; }
+    .hero-intro { font-size: 14px; }
+    .hero-ribbon { padding-inline: 12px; font-size: 8px; letter-spacing: .1em; }
+    .section-heading h2 span { display: block; margin-top: 6px; }
     .post-card { grid-template-columns: 1fr; gap: 16px; }
-    .post-image-link { height: 200px; }
+    .post-image-link { min-height: 200px; }
   }
 </style>
