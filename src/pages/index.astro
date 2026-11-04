@@ -49,7 +49,7 @@ const excerpt = (body: string) => body
             </a>
             <div class="post-copy">
               <div class="post-meta">
-                <span>社会观察</span>
+                <span>{post.data.category}</span>
                 {post.data.tags.map((tag) => <span class="tag">{tag}</span>)}
               </div>
               <h3><a href={`/posts/${post.id}/`}>{post.data.title}</a></h3>

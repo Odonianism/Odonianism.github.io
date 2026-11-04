@@ -1,5 +1,6 @@
 ---
 title: 企业花名制度实为剥夺员工个体性
+category: 社会观察
 tags:
   - 批判
 photos:

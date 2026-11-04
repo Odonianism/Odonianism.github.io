@@ -5,6 +5,7 @@ const posts = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './source/_posts' }),
   schema: z.object({
     title: z.string(),
+    category: z.string(),
     tags: z.array(z.string()).default([]),
     photos: z.array(z.string()).optional(),
   }),
