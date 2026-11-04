@@ -17,7 +17,7 @@ const navigation = [
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#f5f2ec" />
+    <meta name="theme-color" content="#ffffff" />
     <title>{title} · 奥多主义者</title>
   </head>
   <body>
@@ -30,7 +30,7 @@ const navigation = [
         <nav class="site-nav" aria-label="主导航">
           {navigation.map((item) => <a href={item.href}>{item.label}</a>)}
         </nav>
-        <span class="header-note">思想 · 阅读 · 日常</span>
+        <span class="header-note">思想 · 阅读 · 质疑</span>
       </header>
       <main>
         <slot />
@@ -48,16 +48,16 @@ const navigation = [
   :root {
     color-scheme: light;
     font-family: "Noto Serif SC", "Songti SC", "STSong", Georgia, serif;
-    color: #24251f;
-    background: #f5f2ec;
+    color: #111111;
+    background: #ffffff;
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
-    --ink: #24251f;
-    --muted: #76766e;
-    --paper: #fbfaf7;
-    --line: #dedbd2;
-    --accent: #a74f35;
+    --ink: #111111;
+    --muted: #666666;
+    --paper: #ffffff;
+    --line: #d9d9d9;
+    --accent: #b5121b;
     --serif: "Noto Serif SC", "Songti SC", "STSong", Georgia, serif;
     --sans: "Inter", "Helvetica Neue", Arial, sans-serif;
   }
@@ -97,7 +97,7 @@ const navigation = [
     display: grid;
     place-items: center;
     border: 1px solid var(--accent);
-    border-radius: 50%;
+    border-radius: 0;
     color: var(--accent);
     font: italic 21px Georgia, serif;
   }
@@ -111,7 +111,7 @@ const navigation = [
     letter-spacing: .08em;
   }
 
-  .site-nav a { color: #56574f; transition: color .2s ease; }
+  .site-nav a { color: #333333; transition: color .2s ease; }
   .site-nav a:hover, .site-footer a:hover { color: var(--accent); }
   .header-note { color: var(--muted); }
 
@@ -147,7 +147,7 @@ const navigation = [
   }
 
   .prose {
-    color: #45463f;
+    color: #303030;
     font-size: 16px;
     line-height: 2;
     overflow-wrap: anywhere;
@@ -167,7 +167,7 @@ const navigation = [
     margin: 2em 0;
     padding: .2em 0 .2em 1.2em;
     border-left: 2px solid var(--accent);
-    color: #66675f;
+    color: #555555;
   }
   .prose img { display: block; max-width: 100%; height: auto; margin: 2em auto; }
   .prose a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }

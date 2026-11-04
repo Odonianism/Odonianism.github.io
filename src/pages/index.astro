@@ -20,18 +20,12 @@ const excerpt = (body: string) => body
       <p class="hero-intro">阅读笔记、社会观察，以及对不确定性的思考。</p>
       <a class="hero-link" href="#articles">从文章开始 <span aria-hidden="true">↘</span></a>
     </div>
-    <div class="hero-aside" aria-label="网站介绍">
-      <span class="aside-index">01 / 03</span>
-      <span class="aside-rule"></span>
-      <p>写下正在思考的事，<br />也写下对未来的预测。</p>
-      <span class="aside-seal" aria-hidden="true">O</span>
-    </div>
   </section>
 
   <section class="articles" id="articles">
     <div class="section-heading">
       <div>
-        <p class="eyebrow">最近的思考</p>
+        <p class="eyebrow">最近的想法</p>
         <h2>文章</h2>
       </div>
       <span class="article-count">{String(posts.length).padStart(2, '0')} 篇</span>
@@ -45,7 +39,7 @@ const excerpt = (body: string) => body
           </a>
           <div class="post-copy">
             <div class="post-meta">
-              <span>阅读笔记</span>
+              <span>社会观察</span>
               {post.data.tags.map((tag) => <span class="tag">{tag}</span>)}
             </div>
             <h3><a href={`/posts/${post.id}/`}>{post.data.title}</a></h3>
@@ -60,26 +54,49 @@ const excerpt = (body: string) => body
 
 <style>
   .hero {
+    position: relative;
+    isolation: isolate;
     display: grid;
-    grid-template-columns: 1fr 260px;
-    align-items: end;
-    gap: 60px;
-    padding: clamp(72px, 11vw, 140px) 0 100px;
+    align-items: center;
+    min-height: min(660px, calc(100svh - 88px));
+    margin: 40px 0 30px;
+    padding: clamp(56px, 8vw, 112px) clamp(28px, 6vw, 80px);
+    overflow: hidden;
+    border-bottom: 4px solid var(--accent);
+    background: #eee8dd;
+  }
+
+  .hero::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background-image:
+      linear-gradient(90deg, #ffffff 0%, rgb(255 255 255 / 96%) 27%, rgb(255 255 255 / 82%) 45%, rgb(255 255 255 / 28%) 70%, rgb(255 255 255 / 5%) 100%),
+      url('/images/Vintage%20Revolutionary%20Rally%20Poster.png');
+    background-position: center;
+    background-size: cover;
+    content: "";
+  }
+
+  .hero-copy {
+    max-width: 650px;
   }
 
   .hero h1 {
-    max-width: 750px;
+    max-width: 650px;
     margin: 0;
-    font-size: clamp(40px, 7vw, 82px);
-    font-weight: 500;
+    font-size: clamp(40px, 5.5vw, 68px);
+    font-weight: 600;
     line-height: 1.2;
     letter-spacing: -.055em;
   }
 
+  .hero h1::first-line { text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 3px; text-underline-offset: 10px; }
+
   .hero-intro {
     max-width: 440px;
     margin: 24px 0 30px;
-    color: var(--muted);
+    color: #444444;
     font-size: 15px;
     line-height: 1.9;
   }
@@ -96,29 +113,11 @@ const excerpt = (body: string) => body
   .hero-link span { font-size: 18px; transition: transform .2s ease; }
   .hero-link:hover span { transform: translate(3px, 3px); }
 
-  .hero-aside { position: relative; min-height: 150px; padding-top: 18px; }
-  .aside-index, .article-count { color: var(--muted); font: 10px var(--sans); letter-spacing: .1em; }
-  .aside-rule { display: block; width: 100%; margin: 16px 0; border-top: 1px solid var(--line); }
-  .hero-aside p { color: #62635b; font-size: 13px; line-height: 1.9; }
-  .aside-seal {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    width: 48px;
-    height: 48px;
-    display: grid;
-    place-items: center;
-    border: 1px solid #c7c3b8;
-    border-radius: 50%;
-    color: #9b988e;
-    font: italic 27px Georgia, serif;
-  }
-
   .articles { padding-top: 30px; }
-  .section-heading { display: flex; align-items: end; justify-content: space-between; padding-bottom: 22px; border-bottom: 1px solid var(--ink); }
+  .section-heading { display: flex; align-items: end; justify-content: space-between; padding-bottom: 22px; border-bottom: 2px solid var(--ink); }
   .section-heading .eyebrow { margin-bottom: 7px; }
   .section-heading h2 { margin: 0; font-size: 27px; font-weight: 500; }
-  .article-count { padding-bottom: 5px; }
+  .article-count { padding-bottom: 5px; color: var(--muted); font: 10px var(--sans); letter-spacing: .1em; }
 
   .post-card {
     display: grid;
@@ -128,21 +127,26 @@ const excerpt = (body: string) => body
     border-bottom: 1px solid var(--line);
   }
 
-  .post-image-link { position: relative; display: block; height: 190px; overflow: hidden; background: #e8e4dc; }
+  .post-image-link { position: relative; display: block; height: 190px; overflow: hidden; background: #f1f1f1; }
   .post-image-link img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
   .post-image-link:hover img { transform: scale(1.04); }
   .image-index { position: absolute; bottom: 10px; left: 12px; color: #fff; font: 10px var(--sans); letter-spacing: .1em; text-shadow: 0 1px 5px #333; }
   .post-copy { align-self: center; }
   .post-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; color: var(--muted); font: 10px var(--sans); letter-spacing: .06em; }
-  .tag { padding: 4px 8px; border: 1px solid var(--line); }
+  .tag { padding: 4px 8px; border: 1px solid var(--line); color: #333333; }
   .post-copy h3 { margin: 13px 0 10px; font-size: clamp(19px, 2.5vw, 26px); font-weight: 500; line-height: 1.55; }
   .post-copy h3 a:hover { color: var(--accent); }
-  .post-copy > p { display: -webkit-box; overflow: hidden; margin: 0 0 16px; color: var(--muted); font-size: 13px; line-height: 1.9; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+  .post-copy > p { display: -webkit-box; overflow: hidden; margin: 0 0 16px; color: #555555; font-size: 13px; line-height: 1.9; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
   .read-link { gap: 12px; font-size: 10px; }
 
   @media (max-width: 720px) {
-    .hero { grid-template-columns: 1fr; gap: 40px; padding-block: 72px 64px; }
-    .hero-aside { min-height: 115px; max-width: 380px; }
+    .hero { min-height: 600px; margin-top: 24px; padding: 52px 24px; }
+    .hero::before {
+      background-image:
+        linear-gradient(180deg, rgb(255 255 255 / 94%) 0%, rgb(255 255 255 / 89%) 48%, rgb(255 255 255 / 16%) 100%),
+        url('/images/Vintage%20Revolutionary%20Rally%20Poster.png');
+      background-position: 62% center;
+    }
     .post-card { grid-template-columns: minmax(100px, 35%) 1fr; gap: 20px; padding-block: 24px; }
     .post-image-link { height: 150px; }
   }
