@@ -7,6 +7,7 @@ interface Props {
 const { title, description = '阅读、写作，以及关于如何共同生活的思考。' } = Astro.props;
 const navigation = [
   { label: '首页', href: '/' },
+  { label: '文章', href: '/archive/' },
   { label: '关于', href: '/about/' },
 ];
 ---
@@ -30,14 +31,14 @@ const navigation = [
         <nav class="site-nav" aria-label="主导航">
           {navigation.map((item) => <a href={item.href}>{item.label}</a>)}
         </nav>
-        <span class="header-note">思想 · 阅读 · 质疑</span>
+        <span class="header-note"></span>
       </header>
       <main>
         <slot />
       </main>
       <footer class="site-footer">
         <a class="footer-brand" href="/">奥多主义者</a>
-        <span>在不确定中，继续思考。</span>
+        <span></span>
         <a href="#top" onclick="window.scrollTo({ top: 0, behavior: 'smooth' }); return false;">回到顶部 ↑</a>
       </footer>
     </div>

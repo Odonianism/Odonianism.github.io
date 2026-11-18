@@ -1,0 +1,116 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const posts = (await getCollection('posts')).sort((a, b) => b.id.localeCompare(a.id));
+---
+
+<BaseLayout title="Archive">
+  <section class="archive-page">
+    <div class="archive-heading">
+      <div>
+        <p class="eyebrow">文章目录 / ALL ARTICLES</p>
+        <h1 class="page-heading">Archive</h1>
+      </div>
+      <span class="archive-count">{String(posts.length).padStart(2, '0')} 篇文章</span>
+    </div>
+    <ol class="archive-list">
+      {posts.map((post, index) => (
+        <li>
+          <span class="archive-index">{String(index + 1).padStart(2, '0')}</span>
+          <a class="archive-image" href={`/posts/${post.id}/`} aria-label={`阅读：${post.data.title}`}>
+            {post.data.photos?.[0]
+              ? <img src={post.data.photos[0]} alt="" loading="lazy" />
+              : <span class="image-placeholder" aria-hidden="true">暂无图片</span>}
+          </a>
+          <div class="archive-copy">
+            <span class="archive-category">{post.data.category}</span>
+            <h2><a href={`/posts/${post.id}/`}>{post.data.title}</a></h2>
+          </div>
+          <a class="archive-link" href={`/posts/${post.id}/`} aria-label={`阅读：${post.data.title}`}>
+            阅读 <span aria-hidden="true">→</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </section>
+</BaseLayout>
+
+<style>
+  .archive-page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: clamp(64px, 10vw, 112px) 0 24px;
+  }
+
+  .archive-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 24px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .archive-heading .eyebrow { margin-bottom: 14px; }
+
+  .archive-count, .archive-index, .archive-category, .archive-link {
+    font: 12px/1.6 var(--sans);
+    letter-spacing: .08em;
+  }
+
+  .archive-count, .archive-index, .archive-category { color: var(--muted); }
+
+  .archive-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .archive-list li {
+    display: grid;
+    grid-template-columns: 32px 144px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 20px;
+    min-height: 140px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .archive-index { align-self: start; padding-top: 30px; }
+  .archive-image {
+    display: block;
+    width: 144px;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: #e8e2d9;
+  }
+  .archive-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .3s ease;
+  }
+  .archive-image:hover img { transform: scale(1.04); }
+  .image-placeholder {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    place-items: center;
+    color: var(--muted);
+    font: 11px/1.5 var(--sans);
+    letter-spacing: .08em;
+  }
+  .archive-category { display: block; margin-bottom: 6px; }
+  .archive-copy h2 { margin: 0; font-size: clamp(18px, 2.5vw, 23px); font-weight: 500; }
+  .archive-copy h2 a:hover, .archive-link:hover { color: var(--accent); }
+  .archive-link { white-space: nowrap; }
+
+  @media (max-width: 680px) {
+    .archive-page { padding-top: 56px; }
+    .archive-list li { grid-template-columns: 24px 92px minmax(0, 1fr); gap: 12px; padding-block: 12px; }
+    .archive-index { padding-top: 4px; }
+    .archive-image { width: 92px; }
+    .archive-link { display: none; }
+  }
+</style>
